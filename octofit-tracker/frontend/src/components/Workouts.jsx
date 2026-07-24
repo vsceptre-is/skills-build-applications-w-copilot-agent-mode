@@ -68,7 +68,7 @@ export default function Workouts() {
         {!loading && !error && (
           <div className="row row-cols-1 row-cols-md-2 g-3">
             {workouts.length === 0 ? (
-              <p className="text-muted">No workouts found.</p>
+              <p className="text-muted">No workout found.</p>
             ) : (
               workouts.map((workout) => (
                 <div key={workout._id || workout.name} className="col">

@@ -1,30 +1,5 @@
 import { useEffect, useState } from 'react';
-
-function getApiBaseUrl() {
-  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
-
-  if (codespaceName) {
-    return `https://${codespaceName}-8000.app.github.dev`;
-  }
-
-  return 'http://localhost:8000';
-}
-
-function normalizeResults(payload) {
-  if (Array.isArray(payload)) {
-    return payload;
-  }
-
-  if (payload && Array.isArray(payload.results)) {
-    return payload.results;
-  }
-
-  if (payload && Array.isArray(payload.data)) {
-    return payload.data;
-  }
-
-  return [];
-}
+import { getApiBaseUrl, normalizeResults } from '../utils/api';
 
 export default function Workouts() {
   const [workouts, setWorkouts] = useState([]);

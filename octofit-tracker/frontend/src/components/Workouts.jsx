@@ -37,7 +37,7 @@ export default function Workouts() {
 
     async function loadWorkouts() {
       try {
-        const response = await fetch(`/api/workouts/`, { signal: controller.signal });
+        const response = await fetch(`${baseUrl}/api/workouts/`, { signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
@@ -68,7 +68,7 @@ export default function Workouts() {
         {!loading && !error && (
           <div className="row row-cols-1 row-cols-md-2 g-3">
             {workouts.length === 0 ? (
-              <p className="text-muted">No workout found.</p>
+              <p className="text-muted">No workouts found.</p>
             ) : (
               workouts.map((workout) => (
                 <div key={workout._id || workout.name} className="col">

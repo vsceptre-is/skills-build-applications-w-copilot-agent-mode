@@ -37,7 +37,7 @@ export default function Teams() {
 
     async function loadTeams() {
       try {
-        const response = await fetch(`/api/teams/`, { signal: controller.signal });
+        const response = await fetch(`${baseUrl}/api/teams/`, { signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

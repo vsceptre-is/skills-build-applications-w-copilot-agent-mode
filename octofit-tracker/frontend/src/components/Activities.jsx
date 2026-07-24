@@ -37,7 +37,7 @@ export default function Activities() {
 
     async function loadActivities() {
       try {
-        const response = await fetch(`/api/activities/`, { signal: controller.signal });
+        const response = await fetch(`${baseUrl}/api/activities/`, { signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

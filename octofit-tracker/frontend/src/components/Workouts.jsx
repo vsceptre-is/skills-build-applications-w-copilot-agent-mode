@@ -37,7 +37,7 @@ export default function Workouts() {
 
     async function loadWorkouts() {
       try {
-        const response = await fetch(`${baseUrl}/api/workouts/`, { signal: controller.signal });
+        const response = await fetch(`/api/workouts/`, { signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

@@ -37,7 +37,7 @@ export default function Leaderboard() {
 
     async function loadLeaderboard() {
       try {
-        const response = await fetch(`${baseUrl}/api/leaderboard/`, { signal: controller.signal });
+        const response = await fetch(`/api/leaderboard/`, { signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

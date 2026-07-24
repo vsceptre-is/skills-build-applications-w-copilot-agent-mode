@@ -37,7 +37,7 @@ export default function Users() {
 
     async function loadUsers() {
       try {
-        const response = await fetch(`${baseUrl}/api/users/`, { signal: controller.signal });
+        const response = await fetch(`/api/users/`, { signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

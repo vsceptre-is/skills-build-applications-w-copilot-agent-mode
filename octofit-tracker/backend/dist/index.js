@@ -7,9 +7,11 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./config/database");
+const models_1 = require("./models");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT || 8000);
+const host = process.env.HOST || '0.0.0.0';
 const codespaceName = process.env.CODESPACE_NAME;
 const baseUrl = codespaceName
     ? `https://${codespaceName}-8000.app.github.dev`
@@ -19,45 +21,35 @@ app.use(express_1.default.json());
 app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', port, apiUrl: baseUrl });
 });
-const resources = {
-    users: [{ id: 1, username: 'ada', email: 'ada@example.com', role: 'admin' }],
-    teams: [{ id: 1, name: 'Alpha', members: ['ada', 'grace'] }],
-    activities: [{ id: 1, type: 'run', durationMinutes: 30 }],
-    leaderboard: [{ id: 1, username: 'ada', score: 120 }],
-    workouts: [{ id: 1, name: 'HIIT', durationMinutes: 20 }],
-};
-function registerResourceRoutes(resourceName, data) {
-    const routePath = `/api/${resourceName}`;
-    const routePathWithSlash = `${routePath}/`;
-    app.get([routePath, routePathWithSlash], (_req, res) => {
-        res.json({ resource: resourceName, count: data.length, results: data });
-    });
-    app.post([routePath, routePathWithSlash], (req, res) => {
-        const item = { id: Date.now(), ...req.body };
-        data.push(item);
-        res.status(201).json(item);
-    });
-    app.get(`${routePath}/:id`, (req, res) => {
-        const item = data.find((entry) => entry.id === Number(req.params.id));
-        if (!item) {
-            res.status(404).json({ error: `${resourceName} not found` });
-            return;
-        }
-        res.json(item);
-    });
-}
-Object.entries(resources).forEach(([resourceName, data]) => {
-    registerResourceRoutes(resourceName, data);
+app.get(['/api/users', '/api/users/'], async (_req, res) => {
+    const users = await models_1.User.find({}).lean();
+    res.json({ resource: 'users', count: users.length, results: users });
+});
+app.get(['/api/teams', '/api/teams/'], async (_req, res) => {
+    const teams = await models_1.Team.find({}).lean();
+    res.json({ resource: 'teams', count: teams.length, results: teams });
+});
+app.get(['/api/activities', '/api/activities/'], async (_req, res) => {
+    const activities = await models_1.Activity.find({}).lean();
+    res.json({ resource: 'activities', count: activities.length, results: activities });
+});
+app.get(['/api/leaderboard', '/api/leaderboard/'], async (_req, res) => {
+    const leaderboard = await models_1.LeaderboardEntry.find({}).lean();
+    res.json({ resource: 'leaderboard', count: leaderboard.length, results: leaderboard });
+});
+app.get(['/api/workouts', '/api/workouts/'], async (_req, res) => {
+    const workouts = await models_1.Workout.find({}).lean();
+    res.json({ resource: 'workouts', count: workouts.length, results: workouts });
 });
 app.get('/api', (_req, res) => {
     res.json({
         message: 'Octofit Tracker API',
-        endpoints: Object.keys(resources).map((resourceName) => `/api/${resourceName}`),
+        endpoints: ['/api/users', '/api/teams', '/api/activities', '/api/leaderboard', '/api/workouts'],
     });
 });
 void (0, database_1.connectDatabase)().finally(() => {
-    app.listen(port, () => {
-        console.log(`Backend listening on port ${port}`);
+    app.listen(port, host, () => {
+        console.log(`Backend listening on ${host}:${port}`);
         console.log(`API base URL: ${baseUrl}`);
     });
 });
